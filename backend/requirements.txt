@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+opencv-python
+transformers
+requests
+validators
+torch
+torchvision
