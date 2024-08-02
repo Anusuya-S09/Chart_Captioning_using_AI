@@ -7,4 +7,3 @@ validators
 torch
 torchvision
 httpx
-python-magic
