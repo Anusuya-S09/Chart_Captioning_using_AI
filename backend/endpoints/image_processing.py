@@ -14,7 +14,7 @@ from PIL import Image, ImageEnhance
 
 def enhance_image(image: Image.Image) -> Image.Image:
     # Resize image
-    max_size = (800, 800)
+    max_size = (256, 256)
     image.thumbnail(max_size, Image.Resampling.LANCZOS)  # Use Image.Resampling.LANCZOS instead of ANTIALIAS
     
     # Enhance contrast
@@ -26,16 +26,19 @@ def enhance_image(image: Image.Image) -> Image.Image:
 
     return image
 
-
 def improve_quality(image_path: str) -> str:
     try:
         image = Image.open(image_path)
+        # Ensure the image is in RGB mode
+        if image.mode != "RGB":
+            image = image.convert("RGB")
         enhanced_image = enhance_image(image)
         processed_path = os.path.join(PROCESSED_DIRECTORY, os.path.basename(image_path))
         enhanced_image.save(processed_path)
         return processed_path
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
+
 
 @router.get("/process_image/{filename}")
 async def process_image(filename: str):

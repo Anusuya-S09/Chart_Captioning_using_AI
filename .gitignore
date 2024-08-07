@@ -3,9 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+kaggle.json
+
 # my files
 uploaded_images/
 processed_images/
+backend/models/datasets
 
 # C extensions
 *.so
