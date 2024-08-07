@@ -4,8 +4,6 @@ __pycache__/
 *$py.class
 
 kaggle.json
-backend/models/resnet50_model_final.keras
-backend/models/resnet50_model.keras
 
 # my files
 uploaded_images/
