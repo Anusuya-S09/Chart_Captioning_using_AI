@@ -9,7 +9,7 @@ feedback_images/
 # my files
 uploaded_images/
 processed_images/
-backend/models/datasets
+backend/models/trainedmodelnew.h5
 
 # C extensions
 *.so
