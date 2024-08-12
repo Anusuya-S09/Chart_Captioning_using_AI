@@ -1,0 +1,2 @@
+Chart Title: TITLE | Wildlife Population
+Chart Type: {'predicted_class': 'LineGraph', 'confidence_score': 0.9999933242797852}
