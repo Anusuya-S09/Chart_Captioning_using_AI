@@ -1,34 +1,63 @@
-# from transformers import pipeline
+import google.generativeai as genai
+from fastapi import APIRouter, HTTPException
+from dotenv import load_dotenv
+import csv
+import os
 
-# class TransformersChatBot:
-#     def __init__(self, csv_data, text_info):
-#         self.nlp = pipeline('question-answering')
-#         self.csv_data = csv_data
-#         self.text_info = text_info
+load_dotenv()
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+model = genai.GenerativeModel('gemini-1.5-pro-latest') 
 
-#     def respond(self, question):
-#         if 'chart' in question.lower():
-#             return self.text_info
-#         elif 'data' in question.lower():
-#             return self.handle_data_query(question)
-#         else:
-#             return "I'm sorry, I don't understand the question."
+router = APIRouter()
 
-#     def handle_data_query(self, question):
-#         # Example: Use a model to extract information related to the question
-#         for row in self.csv_data:
-#             # Placeholder for a more advanced query handling
-#             if any(keyword.lower() in question.lower() for keyword in row.values()):
-#                 return str(row)
-#         return "No data found related to your question."
+def load_csv(file_path):
+    """Load the CSV data and format it as a string."""
+    csv_content = ""
+    with open(file_path, 'r') as file:
+        reader = csv.reader(file)
+        headers = next(reader)
+        csv_content += ", ".join(headers) + "\n"
+        for row in reader:
+            csv_content += ", ".join(row) + "\n"
+    return csv_content
 
-# # Example usage
-# csv_data = load_data_from_csv('extracted_data_example.csv')
-# text_info = load_info_from_text('chart_info_example.txt')
-# preprocessed_data = preprocess_data(csv_data)
+def load_contextual_background(file_path):
+    """Load the contextual background from a CSV file."""
+    with open(file_path, 'r') as file:
+        return file.read()
 
-# chatbot = TransformersChatBot(preprocessed_data, text_info)
+def generate_response(prompt):
+    """Generate a response based on the provided prompt using the generative model."""
+    response = model.generate_content(prompt)
+    return response.text
 
-# # Simulating a chat
-# print(chatbot.respond("Tell me about the chart type."))
-# print(chatbot.respond("What data is available about the PieChart?"))
+@router.get("/chatbot")
+async def chatbot(user_input: str):
+    context = load_contextual_background('contextual_background_report.md')
+    csv_data = load_csv('extracted_table.csv')
+    combined_data = f"Markdown Data:\n{context}\n\nCSV Data:\n{csv_data}"
+
+    print("Welcome! I am your chart analysis assistant.")
+    print("Ask me anything about the chart, such as its data, trends, patterns, or applications.")
+    print("Type 'exit' or 'quit' to end the session.")
+
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() in ['exit', 'quit']:
+            print("Goodbye! If you have more questions in the future, feel free to ask.")
+            break
+        
+        # Create prompt for the model with additional context
+        prompt = (f"Context: {combined_data}\n"
+                  f"Purpose: You are an analyst helping the user understand a visual chart by providing detailed contextual information.\n"
+                  f"User: {user_input}\n"
+                  f"Response:")
+        
+    # Generating response
+    try:
+        response = generate_response(prompt)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating response: {str(e)}")
+
+    return {"response": response}
+
