@@ -11,22 +11,21 @@ def load_css():
         <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-image: ""
         }
         .sidebar .sidebar-content {
             padding: 20px;
         }
-        .main-content {
-            padding: 20px;
-        }
+
         .section {
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             padding: 20px;
             border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .section h2 {
             margin-bottom: 10px;
             font-size: 24px;
+            color: #333;
         }
         .result-image {
             margin-top: 20px;
@@ -48,6 +47,9 @@ def load_css():
         .success {
             color: #4dff4d;
             font-weight: bold;
+        }
+        .chat-container {
+            margin-top: 20px;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -75,7 +77,7 @@ def main():
             with open("chart_info.txt", "r") as file:
                 caption = file.read()
                 if caption:
-                    st.markdown('<div class="section">', unsafe_allow_html=True)
+                    st.markdown('<div>', unsafe_allow_html=True)
                     st.markdown(caption, unsafe_allow_html=True)
                     st.markdown('</div>', unsafe_allow_html=True)
                 else:
@@ -91,8 +93,6 @@ def main():
         st.markdown('<p class="error">Please upload an image to generate a caption and chat.</p>', unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
-
-
 
 if __name__ == "__main__":
     main()

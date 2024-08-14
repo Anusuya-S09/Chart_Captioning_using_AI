@@ -9,7 +9,7 @@ from PIL import Image
 # Initialize the router
 router = APIRouter()
 
-# Load the trained model once at the start
+# Load the VGG19 once at the start
 model_path = './backend/models/trainedmodelnew.h5'
 model = load_model(model_path)
 
@@ -39,7 +39,7 @@ async def detect_chart(file: UploadFile = File(...)):
         # Read the image file
         image_data = await file.read()
         image_pil = Image.open(io.BytesIO(image_data))
-        image_pil = image_pil.convert("RGB")  # Ensure the image is in RGB format
+        image_pil = image_pil.convert("RGB")
         image_pil = image_pil.resize((img_height, img_width))
         
         # Preprocess the image
@@ -53,7 +53,7 @@ async def detect_chart(file: UploadFile = File(...)):
         predicted_class = class_labels[predicted_class_index]
         confidence_score = prediction[0][predicted_class_index]
 
-        return JSONResponse(content={"predicted_class": predicted_class})
+        return JSONResponse(content={"predicted class" : predicted_class})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

@@ -241,7 +241,6 @@ def generate_caption(csv_path, txt_path):
     # Generate the caption
     caption = (
         f"Here's a chart titled '{chart_info['chart_title']}. "
-        f"It features {total_rows} data points across {total_columns} columns. "
         f"The data in the first column '{first_column_name}'. "
         f"This chart effectively visualizes trends in the dataset, offering insights into the patterns."
     )

@@ -14,7 +14,11 @@ body {
     color: #333;
 }
 .main-content {
-    padding: 10px;
+  padding: 20px;
+  background-image: url('static/background.jpg');
+  background-size: cover;
+  background-position: center;
+  border-radius: 15px;
 }
 
 .section h2 {
