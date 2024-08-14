@@ -12,17 +12,6 @@ from typing import Dict
 
 router = APIRouter()
 
-async def get_chart_type(image_bytes: bytes) -> str:
-    async with httpx.AsyncClient() as client:
-        # Wrap image_bytes in a BytesIO object
-        image_file = BytesIO(image_bytes)
-        response = await client.post(
-            "http://127.0.0.1:8000/detect_chart/",
-            files={"file": ("chart.jpg", image_file, "image/jpeg")}
-        )
-        return response.json()
-
-
 def save_table_as_csv(extracted_table: str, output_file_path: str):
     sections = re.split(r'\s+&&&\s+', extracted_table)
     sections = [section.strip() for section in sections if section.strip()]
@@ -47,10 +36,9 @@ def save_table_as_csv(extracted_table: str, output_file_path: str):
     df.to_csv(output_file_path, index=False)
     print(f"Table saved to {output_file_path}")
 
-def save_title_and_chart_type(title: str, chart_type: str, text_file_path: str):
-    with open(text_file_path, 'w') as file:
+def save_title_and_chart_type(title: str, text_file_path: str):
+    with open(text_file_path, 'a') as file:
         file.write(f"Chart Title: {title}\n")
-        file.write(f"Chart Type: {chart_type}\n")
     print(f"Title and Chart Type saved to {text_file_path}")
 
 # Initialize the model and processor globally
@@ -65,7 +53,6 @@ async def extract_data(file: UploadFile = File(...)):
     # Load image
     image_bytes = await file.read()
     img = Image.open(BytesIO(image_bytes))
-    chart_type = await get_chart_type(image_bytes)
 
     # Prepare inputs
     input_prompt = "<data_table_generation> <s_answer>"
@@ -133,6 +120,6 @@ async def extract_data(file: UploadFile = File(...)):
     save_table_as_csv(extracted_table, output_csv_path)
         
     text_file_path = "chart_info.txt"
-    save_title_and_chart_type(title, chart_type, text_file_path)
+    save_title_and_chart_type(title, text_file_path)
         
     return {"message": "Data extracted and saved successfully"}

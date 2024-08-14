@@ -53,7 +53,7 @@ async def detect_chart(file: UploadFile = File(...)):
         predicted_class = class_labels[predicted_class_index]
         confidence_score = prediction[0][predicted_class_index]
 
-        return JSONResponse(content={"predicted_class": predicted_class, "confidence_score": float(confidence_score)})
+        return JSONResponse(content={"predicted_class": predicted_class})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

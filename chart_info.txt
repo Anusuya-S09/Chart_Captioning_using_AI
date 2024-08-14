@@ -1,2 +1,6 @@
-Chart Title: TITLE | Wildlife Population
-Chart Type: {'predicted_class': 'LineGraph', 'confidence_score': 0.9999933242797852}
+Chart Type: {'predicted_class': 'VennDiagram'}
+Chart Title: TITLE | Distribution of coronavirus (COVID-19) cases in South Korea as of November 20, 2020, by province
+
+
+Generated Caption:
+Here's a chart titled 'TITLE | Distribution of coronavirus (COVID-19) cases in South Korea as of November 20, 2020, by province. It features 16 data points across 2 columns. The data in the first column 'Response'. This chart effectively visualizes trends in the dataset, offering insights into the patterns.

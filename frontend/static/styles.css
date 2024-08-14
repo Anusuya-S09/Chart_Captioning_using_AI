@@ -1,0 +1,95 @@
+/* General chat container */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f6;
+}
+.sidebar .sidebar-content {
+    padding: 20px;
+}
+
+.sidebar .section h2 {
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: #333;
+}
+.main-content {
+    padding: 10px;
+}
+
+.section h2 {
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #333;
+}
+.result-image {
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+}
+.markdown-text {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+.error {
+    color: #ff4d4d;
+    font-weight: bold;
+}
+.success {
+    color: #4dff4d;
+    font-weight: bold;
+}
+
+
+.chat-row {
+  display: flex;
+  margin: 10px;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.row-reverse {
+  flex-direction: row-reverse;
+}
+
+.chat-bubble {
+  font-family: "Source Sans Pro", sans-serif, "Segoe UI", "Roboto", sans-serif;
+  border-radius: 15px;
+  padding: 10px 15px;
+  margin: 0px 10px;
+  max-width: 75%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.ai-bubble {
+  background: #535050;
+  border: 1px solid #ddd;
+}
+
+.human-bubble {
+  background: #007bff;
+  color: #fff;
+}
+
+.chat-icon {
+  border-radius: 50%;
+  border: 2px solid #ddd;
+}
+
+/* Form styles */
+.stButton button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.stButton button:hover {
+  background-color: #0056b3;
+}

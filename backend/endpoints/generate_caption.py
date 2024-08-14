@@ -6,7 +6,6 @@ from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import LabelEncoder
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 from fastapi import APIRouter, File, UploadFile, HTTPException
-from fastapi.responses import JSONResponse
 
 router = APIRouter()
 
@@ -16,7 +15,6 @@ template_str = """
 
 ### Overview
 - **Dataset Name**: {{ dataset_name }}
-- **Chart Type**: {{ chart_type }}
 - **Description**: {{ description }}
 
 ### Data Structure
@@ -50,23 +48,19 @@ template_str = """
 """
 
 def read_chart_info(file_path):
-    chart_type = None
     chart_title = None
     
     with open(file_path, 'r') as file:
         lines = file.readlines()
         for line in lines:
             line = line.strip()
-            if line.startswith("Chart Type:"):
-                chart_type = line.split(":", 1)[1].strip()
-            elif line.startswith("Chart Title:"):
+            if line.startswith("Chart Title:"):
                 chart_title = line.split(":", 1)[1].strip()
 
     if not chart_title:
         chart_title="Cannot be determined"
 
     return {
-        "chart_type": chart_type,
         "chart_title": chart_title
     }
 
@@ -232,6 +226,7 @@ def determine_use_cases(df):
 
 
 def generate_caption(csv_path, txt_path):
+    """Generate a caption based on the CSV data and append it to the chart info text file."""
     chart_info = read_chart_info(txt_path)
     df = pd.read_csv(csv_path)
 
@@ -243,12 +238,17 @@ def generate_caption(csv_path, txt_path):
     max_value = df[first_column_name].max() if df[first_column_name].dtype in ['int64', 'float64'] else 'N/A'
     min_value = df[first_column_name].min() if df[first_column_name].dtype in ['int64', 'float64'] else 'N/A'
     
+    # Generate the caption
     caption = (
-        f"Here's a chart titled '{chart_info['chart_title']}' showcasing {chart_info['chart_type']}. "
+        f"Here's a chart titled '{chart_info['chart_title']}. "
         f"It features {total_rows} data points across {total_columns} columns. "
-        f"The data in the first column '{first_column_name}' ranges from {min_value} to {max_value}. "
-        f"This chart effectively visualizes trends in the dataset, offering insights into the {chart_info['chart_type'].lower()} patterns."
+        f"The data in the first column '{first_column_name}'. "
+        f"This chart effectively visualizes trends in the dataset, offering insights into the patterns."
     )
+    
+    # Append the caption to the chart info text file
+    with open(txt_path, 'a') as file:
+        file.write(f"\n\nGenerated Caption:\n{caption}")
     
     return caption
 
@@ -483,15 +483,15 @@ def generate_further_exploration(df, primary_use_case):
     return '\n'.join(further_exploration)
 
 
-@router.post("/caption/")
-async def detect_chart(csv_file_path: UploadFile = File(...)):
+@router.post("/generate_caption")
+async def detect_chart():
+    csv_file_path = "extracted_table.csv"
     df = pd.read_csv(csv_file_path)
 
     file_path = "chart_info.txt"
     chart_info = read_chart_info(file_path)
 
     dataset_name = chart_info['chart_title']
-    Chart_type = chart_info['chart_type']
     description = generate_caption(csv_file_path, file_path)
     total_rows, total_columns = df.shape
     data_format = "CSV"
@@ -518,7 +518,6 @@ async def detect_chart(csv_file_path: UploadFile = File(...)):
 
     context = {
         "dataset_name": dataset_name,
-        "chart_type": Chart_type,
         "description": description,
         "total_rows": total_rows,
         "total_columns": total_columns,
